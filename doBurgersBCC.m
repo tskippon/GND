@@ -8,8 +8,8 @@ magBurg=(sqrt(3)/2)*CS.axes.x(1)/1E4; %burgers vector magnitude (micrometers)
 %**************************
 %First Slip System (Edge)
 %**************************
-b=Miller(1,1,1,CS,'hkl');
-n=Miller(1,1,0,CS,'uvw');
+b=Miller(1,1,1,CS,'uvw');
+n=Miller(1,1,0,CS,'hkl');
 
 [b,c] = symmetrise(b,'antipodal');
 [n,c] = symmetrise(n,'antipodal');
@@ -26,19 +26,19 @@ n = n(c);
 systems(1).burgers=b;
 systems(1).plane=n;
 
-bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.h);
-bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.k);
-bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.l);
+bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.u);
+bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.v);
+bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.w);
 
-bmag=sqrt((round(b.h)).^2 + (round(b.k)).^2 + round(b.l).^2);
+bmag=sqrt((round(b.u)).^2 + (round(b.v)).^2 + round(b.w).^2);
 
 for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
 for i=1:size(b,1)
-    v1=[round(b(i).h) round(b(i).k) round(b(i).l)];
-    v2=[round(n(i).U) round(n(i).V) round(n(i).W)];
+    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
 %     v1=v1./norm(v1);
 %     v2=v2./norm(v2);
     t=cross(v1,v2);
@@ -51,8 +51,8 @@ first=1:Ntypes;
 %**************************
 %Second Slip System (Edge)
 %**************************
-b=Miller(1,1,1,CS,'hkl');
-n=Miller(1,1,2,CS,'uvw');
+b=Miller(1,1,1,CS,'uvw');
+n=Miller(1,1,2,CS,'hkl');
 
 
 [b,c] = symmetrise(b,'antipodal');
@@ -69,19 +69,19 @@ systems(2).plane=n;
 b = b(r);
 n = n(c);
 
-bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.h);
-bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.k);
-bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.l);
+bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.u);
+bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.v);
+bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.w);
 
-bmag=sqrt((round(b.h)).^2 + (round(b.k)).^2 + round(b.l).^2);
+bmag=sqrt((round(b.u)).^2 + (round(b.v)).^2 + round(b.w).^2);
 
 for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
 for i=1:size(b,1)
-    v1=[round(b(i).h) round(b(i).k) round(b(i).l)];
-    v2=[round(n(i).U) round(n(i).V) round(n(i).W)];
+    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
 %     v1=v1./norm(v1);
 %     v2=v2./norm(v2);
     t=cross(v1,v2);
@@ -94,8 +94,8 @@ secnd=(first(end)+1):Ntypes;
 %**************************
 %Third Slip System (Edge)
 %**************************
-b=Miller(1,1,1,CS,'hkl');
-n=Miller(1,2,3,CS,'uvw');
+b=Miller(1,1,1,CS,'uvw');
+n=Miller(1,2,3,CS,'hkl');
 
 
 [b,c] = symmetrise(b,'antipodal');
@@ -112,19 +112,19 @@ systems(3).plane=n;
 b = b(r);
 n = n(c);
 
-bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.h);
-bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.k);
-bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.l);
+bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.u);
+bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.v);
+bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.w);
 
-bmag=sqrt((round(b.h)).^2 + (round(b.k)).^2 + round(b.l).^2);
+bmag=sqrt((round(b.u)).^2 + (round(b.v)).^2 + round(b.w).^2);
 
 for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
 for i=1:size(b,1)
-    v1=[round(b(i).h) round(b(i).k) round(b(i).l)];
-    v2=[round(n(i).U) round(n(i).V) round(n(i).W)];
+    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
 %     v1=v1./norm(v1);
 %     v2=v2./norm(v2);
     t=cross(v1,v2);
@@ -136,17 +136,17 @@ third=(secnd(end)+1):Ntypes;
 %**************************
 %Screw Dislocations 
 %**************************
-b=Miller(1,1,1,CS,'hkl');
+b=Miller(1,1,1,CS,'uvw');
 [b,c] = symmetrise(b,'antipodal');
 
 systems(4).burgers=b;
 systems(4).plane='screw';
 
-bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.h);
-bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.k);
-bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.l);
+bt(Ntypes+1:Ntypes+size(b,1),1,1)=round(b.u);
+bt(Ntypes+1:Ntypes+size(b,1),1,2)=round(b.v);
+bt(Ntypes+1:Ntypes+size(b,1),1,3)=round(b.w);
 
-bmag=sqrt((round(b.h)).^2 + (round(b.k)).^2 + round(b.l).^2);
+bmag=sqrt((round(b.u)).^2 + (round(b.v)).^2 + round(b.w).^2);
 for i=1:size(b,1)
     bt(i+Ntypes,2,1:3)=bt(i+Ntypes,1,1:3)/bmag(i);
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)/bmag(i).*magBurg;
