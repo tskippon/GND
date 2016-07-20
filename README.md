@@ -86,3 +86,9 @@ I know that some HCP metals (eg. Mg) can accomplish pyramidal slip through a sli
 a small edit.  If you look through the file you will find a comment designating where a slip system setup begins (example: %%Pyramidal Slip System (Edge)).  Immediately following this will be a pair of lines that assigns
 values to a variable b (the slip direction) and n (the slip plane).  Just change the numbers inside the call to the "Miller" functions in these lines to the slip direction and plane you wish to use.  You don't need to worry
 about symmetries, the next few lines of code do that automatically, just get the right families of planes/directions and everything should be fine.
+
+
+Further Reference
+
+This code is based on the approach detailed by W. Pantleon in the paper "Resolving the geometrically necessary dislocation content by conventional
+electron backscattering diffraction", Scripta Materialia, 2008, 58, p994-997, DOI: 10.1016/j.scriptamat.2008.01.050
