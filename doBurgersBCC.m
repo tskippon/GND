@@ -1,6 +1,6 @@
-function [ f, A, lb, systems] = doBurgersBCC(ebsd,i,poisson)
+function [ f, A, lb, systems] = doBurgersBCC(ebsd,phaseNum,poisson)
 Ntypes=0;
-CS=ebsd(ebsd.phase==i).CS;
+CS=ebsd(ebsd.phase==phaseNum).CS;
 magBurg=(sqrt(3)/2)*CS.axes.x(1)/1E4; %burgers vector magnitude (micrometers)
 
 
@@ -36,14 +36,21 @@ for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
-for i=1:size(b,1)
-    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
-    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
-%     v1=v1./norm(v1);
-%     v2=v2./norm(v2);
-    t=cross(v1,v2);
-    bt(i+Ntypes,2,:)=t/norm(t);
+for i=1:size(b,1)    
+    t=Miller(cross(vector3d(b(i)),vector3d(n(i))),CS);
+    t.dispStyle='uvw';
+    t=round(t);
+    bt(i+Ntypes,2,:)=t.uvw/sqrt(t.u^2+t.v^2+t.w^2);
 end
+
+% for i=1:size(b,1)
+%     v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+%     v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
+% %     v1=v1./norm(v1);
+% %     v2=v2./norm(v2);
+%     t=cross(v1,v2);
+%     bt(i+Ntypes,2,:)=t/norm(t);
+% end
 
 Ntypes=size(bt,1);
 first=1:Ntypes;
@@ -79,14 +86,21 @@ for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
-for i=1:size(b,1)
-    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
-    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
-%     v1=v1./norm(v1);
-%     v2=v2./norm(v2);
-    t=cross(v1,v2);
-    bt(i+Ntypes,2,:)=t/norm(t);
+for i=1:size(b,1)    
+    t=Miller(cross(vector3d(b(i)),vector3d(n(i))),CS);
+    t.dispStyle='uvw';
+    t=round(t);
+    bt(i+Ntypes,2,:)=t.uvw/sqrt(t.u^2+t.v^2+t.w^2);
 end
+
+% for i=1:size(b,1)
+%     v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+%     v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
+% %     v1=v1./norm(v1);
+% %     v2=v2./norm(v2);
+%     t=cross(v1,v2);
+%     bt(i+Ntypes,2,:)=t/norm(t);
+% end
 
 Ntypes=size(bt,1);
 secnd=(first(end)+1):Ntypes;
@@ -122,14 +136,21 @@ for i=1:size(b,1)
     bt(i+Ntypes,1,1:3)=bt(i+Ntypes,1,1:3)./bmag(i).*magBurg;
 end
 
-for i=1:size(b,1)
-    v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
-    v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
-%     v1=v1./norm(v1);
-%     v2=v2./norm(v2);
-    t=cross(v1,v2);
-    bt(i+Ntypes,2,:)=t/norm(t);
+for i=1:size(b,1)    
+    t=Miller(cross(vector3d(b(i)),vector3d(n(i))),CS);
+    t.dispStyle='uvw';
+    t=round(t);
+    bt(i+Ntypes,2,:)=t.uvw/sqrt(t.u^2+t.v^2+t.w^2);
 end
+
+% for i=1:size(b,1)
+%     v1=[round(b(i).u) round(b(i).v) round(b(i).w)];
+%     v2=[round(n(i).k) round(n(i).k) round(n(i).l)];
+% %     v1=v1./norm(v1);
+% %     v2=v2./norm(v2);
+%     t=cross(v1,v2);
+%     bt(i+Ntypes,2,:)=t/norm(t);
+% end
 
 Ntypes=size(bt,1);
 third=(secnd(end)+1):Ntypes;
