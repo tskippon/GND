@@ -87,8 +87,21 @@ a small edit.  If you look through the file you will find a comment designating 
 values to a variable b (the slip direction) and n (the slip plane).  Just change the numbers inside the call to the "Miller" functions in these lines to the slip direction and plane you wish to use.  You don't need to worry
 about symmetries, the next few lines of code do that automatically, just get the right families of planes/directions and everything should be fine.
 
+****************************************
+Notes for Older Versions of MATLAB:
+****************************************
+For versions of MATLAB earlier than 2013:
+- line 94 of GND_auto.m should be changed from:
+options=optimoptions('linprog','Algorithm','dual-simplex','Display','off');
+to
+options=optimset('Display','off');
 
+- add a line to GND_auto.m before line 101 ('%loop through all points') with the commend
+matlabpool(nthreads);
+
+****************************************
 Further Reference
+****************************************
 
 This code is based on the approach detailed by W. Pantleon in the paper "Resolving the geometrically necessary dislocation content by conventional
 electron backscattering diffraction", Scripta Materialia, 2008, 58, p994-997, DOI: 10.1016/j.scriptamat.2008.01.050
