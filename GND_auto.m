@@ -18,28 +18,36 @@ end
 if nargin>3
     numCubics=0;
     cubicTypeDefined=length(cubicType);
-    for i=1:max(ebsd.phase)
+    for i=unique(ebsd.phase(ebsd.phase>0))'
         if strcmp(ebsd(ebsd.phase==i).CS.lattice,'cubic')
             numCubics=numCubics+1;
         end
     end
 end
+
+%cubic counter used for checking that cubictype is defined for each cubic
+%phase.  Should be set at 1 initially. If there are no cubic phases this
+%will not be used.
 cubicCounter=1;
+
+
 %Calculate lattice curvatures using C language code for speed.
 disp('Calculating Curvatures...');
 curve = CalcCurvature(ebsd);
 disp('Curvature calculations complete!');
 
     
-
+tempPoisson=poisson;
 %automated setup of dislocation types
-for(i=1:max(ebsd.phase))
-    if(i>poissonDefined)
-        prompt=sprintf('Poisson Ratio not defined for phase%i (%s)\n (To avoid this dialog send an array containing the values for all phases as an input when calling GND code)',i,ebsd(ebsd.phase==i).mineral);
+for i=unique(ebsd.phase(ebsd.phase>0))'
+    if(length(unique(ebsd.phase(ebsd.phase>0)))>poissonDefined)
+        prompt=sprintf('Number of defined Poissons Ratio less than number of phases in ebsd data.  Enter Poisson Ratio for phase %i (%s) now.\n (To avoid this dialog send an array containing the values for all phases as an input when calling GND code)',i,ebsd(ebsd.phase==i).mineral);
         name = 'Poissons ratio:';
         defaultans = {'0.30'};
         input = inputdlg(prompt,name,[1 40],defaultans);
         poisson(i)=str2double(input{:});
+    else
+        poisson(i)=tempPoisson(find(unique(ebsd.phase(ebsd.phase>0))'==i));
     end
     if(strcmp(ebsd(ebsd.phase==i).CS.lattice,'hexagonal'))
      
@@ -62,9 +70,6 @@ for(i=1:max(ebsd.phase))
     end
     
 end
-%autoBT;
-
-%Note: Ntypes is the number of dislocation types (defined inside autoBT)
 
 
 

@@ -11,15 +11,19 @@ function curves = CalcCurvature(ebsd)
         phase = ebsd.phase;
         dx = max(ebsd.unitCell(:,1))-min(ebsd.unitCell(:,1));
         dy = max(ebsd.unitCell(:,2))-min(ebsd.unitCell(:,2));
+
+        
         
         symType=zeros(max(ebsd.phase),1);
-        for(i=1:max(ebsd.phase))
+        for i=unique(ebsd.phase(ebsd.phase>0))'
+            i
             if(strcmp(ebsd(ebsd.phase==i).CS.lattice,'hexagonal'))
                 symType(i)=1;
             elseif(strcmp(ebsd(ebsd.phase==i).CS.lattice,'cubic'))
                 symType(i)=2;
             end
         end
+
                 
         [curves] = cpp_curvatures(x,y,eul1,eul2,eul3,grainId,phase,dx,dy,symType);
        
