@@ -16,7 +16,6 @@ function curves = CalcCurvature(ebsd)
         
         symType=zeros(max(ebsd.phase),1);
         for i=unique(ebsd.phase(ebsd.phase>0))'
-            i
             if(strcmp(ebsd(ebsd.phase==i).CS.lattice,'hexagonal'))
                 symType(i)=1;
             elseif(strcmp(ebsd(ebsd.phase==i).CS.lattice,'cubic'))
