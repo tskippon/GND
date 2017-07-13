@@ -11,7 +11,7 @@ magBurg=(sqrt(3)/2)*CS.axes.x(1)/1E4; %burgers vector magnitude (micrometers)
 b=Miller(1,1,1,CS,'uvw');
 n=Miller(1,1,0,CS,'hkl');
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 
@@ -62,7 +62,7 @@ b=Miller(1,1,1,CS,'uvw');
 n=Miller(1,1,2,CS,'hkl');
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 systems(2).burgers=b;
@@ -112,7 +112,7 @@ b=Miller(1,1,1,CS,'uvw');
 n=Miller(1,2,3,CS,'hkl');
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 systems(3).burgers=b;
@@ -158,7 +158,7 @@ third=(secnd(end)+1):Ntypes;
 %Screw Dislocations 
 %**************************
 b=Miller(1,1,1,CS,'uvw');
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 
 systems(4).burgers=b;
 systems(4).plane='screw';

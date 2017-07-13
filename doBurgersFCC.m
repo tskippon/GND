@@ -12,7 +12,7 @@ b=Miller(1,1,0,CS,'uvw');
 n=Miller(1,1,1,CS,'hkl');
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 
@@ -62,7 +62,7 @@ edge=1:Ntypes;
 %Screw Dislocations 
 %**************************
 b=Miller(1,1,0,CS,'uvw');
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 
 systems(2).burgers=b;
 systems(2).plane='screw';

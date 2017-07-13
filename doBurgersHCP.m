@@ -28,7 +28,7 @@ n=Miller(1,0,-1,0,CS,'hkl');
 %NOTE (c) is irrelevant and will be overwritten.
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 %find the cases where these are perpendicular by taking the dot product.
@@ -99,7 +99,7 @@ prismTypes=1:Ntypes;
 b=Miller(1,1,-2,0,CS,'uvw');
 
 %find all equivalents
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 
 %save the valid slip systems and planes into a structure named 'systems'
 %for <a> type screw, there should be three unique b.
@@ -135,7 +135,7 @@ n=Miller(0,0,0,1,CS,'hkl');
 %get all equivalent vectors (b) or planes(n), and number of them (c) 
 %NOTE (c) is irrelevant and will be overwritten.
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 %find the cases where these are perpendicular by taking the dot product (=0).
@@ -205,7 +205,7 @@ n=Miller(1,0,-1,1,CS,'hkl');
 %NOTE (c) is irrelevant and will be overwritten.
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 %find the cases where these are perpendicular by taking the dot product.
@@ -262,7 +262,7 @@ n=Miller(1,1,-2,2,CS,'hkl');
 %NOTE (c) is irrelevant and will be overwritten.
 
 
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 [n,c] = symmetrise(n,'antipodal');
 
 %find the cases where these are perpendicular by taking the dot product.
@@ -327,7 +327,7 @@ pyramidalTypes2=(pyramidalTypes(end)+1):Ntypes;
 b=Miller(1,1,-2,3,CS,'uvw');
 
 %find all equivalents
-[b,c] = symmetrise(b,'antipodal');
+[b,c] = symmetrise(b);
 
 %save the valid slip systems and planes into a structure named 'systems'
 %there should be 6 systems
