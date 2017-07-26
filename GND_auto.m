@@ -9,6 +9,13 @@ function [disArray, systems]= GND_auto( ebsd, nthreads,poisson,cubicType )
 %are stored in disArray
 
 
+%Set up parallel pool
+if nthreads>1
+    pool=gcp;
+end
+
+
+
 if nargin==2
     poissonDefined=0;
 end
@@ -78,35 +85,44 @@ end
 %**************************************************************************
 disp('Minimizing dislocation energy...');
 
-
-singleCoreTime=40/2000; %single core takes 40 seconds for 2000 pointss
-speedUp=0.5305*nthreads+0.7107; %Amount of speedup gained from using nthreads cores
-if nthreads==1
-    speedUp=1;
-end
-estimate=size(curve,1)*singleCoreTime/speedUp;
-fprintf('Estimated time to completion: %s if running on %d cores.\n',datestr(estimate/60/60/24,'HH:MM:SS'),nthreads);
-%assignin('base', 'curve', curve);
 disArray = zeros(size(curve,1),max(cellfun('length',f)));
 
-alpha1=-curve(:,2);
-alpha2=-curve(:,3);
+kappa21=-curve(:,2);
+kappa31=-curve(:,3);
 
-alpha3=-curve(:,4);
-alpha4=-curve(:,6);
-alpha5=curve(:,1)+curve(:,5);
+kappa12=-curve(:,4);
+kappa32=-curve(:,6);
+
+kappa11=-curve(:,1);
+kappa22=-curve(:,5);
 
 options=optimoptions('linprog','Algorithm','dual-simplex','Display','off');
-
-tic
 phase=ebsd.phase;
 fmaxSize=max(cellfun('length',f));
 
+%Do short test run on the first 20*nthreads points to estimate time
+%required for the full dataset.
+testrun=find(ebsd.phase>0,20*nthreads)';
+tic
+parfor (j=testrun,nthreads)
+   x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
+   disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
+end
+estimate=toc*length(curve)/length(testrun);
+
+%Ptrint out time estimate in HH:MM:SS format.
+fprintf('Estimated time to completion: %s.\n',datestr(estimate/60/60/24,'HH:MM:SS'));
+
+
+tic
 %loop through all points
 parfor (j=1:size(curve,1),nthreads)
-    %for j=1:size(curve,1) %this line for running in serial
-    if(phase(j)~=0)
-        x =linprog(f{phase(j)},A{phase(j)},[alpha1(j) alpha2(j) alpha3(j) alpha4(j) alpha5(j)],[],[],lb{phase(j)},[],[],options);
+%for j=1:size(curve,1) %this line for running in serial
+
+    %Only perform calculations on indexed phases, don't redo calculations
+    %that were done in the test run.
+    if(phase(j)~=0 && max(testrun==j)==0)        
+        x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
         disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
     end
 end
