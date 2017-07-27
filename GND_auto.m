@@ -102,11 +102,13 @@ fmaxSize=max(cellfun('length',f));
 
 %Do short test run on the first 20*nthreads points to estimate time
 %required for the full dataset.
-testrun=find(ebsd.phase>0,20*nthreads)';
+testrun=1:min(200*nthreads,length(ebsd));
 tic
 parfor (j=testrun,nthreads)
-   x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
-   disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
+    if(phase(j)~=0)
+        x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
+        disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
+    end
 end
 estimate=toc*length(curve)/length(testrun);
 
