@@ -13,6 +13,7 @@ while j<=length(systems{i})
         GND(GND_counter).name=systems{i}(j).name;
     end
     GND(GND_counter).data(ebsd.phase==i)=sum(disArray(ebsd.phase==i,systems{i}(j).indices),2);
+    GND(GND_counter).data(ebsd.phase==0 | ebsd.phase >i)=NaN;
     GND(GND_counter).burgers=systems{i}(j).burgers;
     GND(GND_counter).plane=systems{i}(j).plane;   
     GND(GND_counter).phase=i;

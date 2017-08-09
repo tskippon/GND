@@ -102,7 +102,7 @@ fmaxSize=max(cellfun('length',f));
 
 %Do short test run on the first 20*nthreads points to estimate time
 %required for the full dataset.
-testrun=1:min(200*nthreads,length(ebsd));
+testrun=1:min(1000*nthreads,length(ebsd));
 tic
 parfor (j=testrun,nthreads)
     if(phase(j)~=0)
@@ -110,7 +110,7 @@ parfor (j=testrun,nthreads)
         disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
     end
 end
-estimate=toc*length(curve)/length(testrun);
+estimate=toc*(length(curve)-length(testrun))/length(testrun);
 
 %Ptrint out time estimate in HH:MM:SS format.
 fprintf('Estimated time to completion: %s.\n',datestr(estimate/60/60/24,'HH:MM:SS'));
