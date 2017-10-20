@@ -189,7 +189,7 @@ n = n(c);
 %for prismatic slip, there should be SIX unique b.
 systems(4).burgers=b;
 systems(4).plane=n;
-systems(4).name='Pyramdial<c+a>';
+systems(4).name='Pyramidal<c+a>';
 
 %convert the burgers vector index from Miller-Bravais to Miller (orthagonal)
 %and store in the bt double
@@ -234,7 +234,7 @@ n = n(c);
 %for prismatic slip, there should be SIX unique b.
 systems(5).burgers=b;
 systems(5).plane=n;
-systems(5).name='Pyramdial2<c+a>';
+systems(5).name='Pyramidal2<c+a>';
 
 %convert the burgers vector index from Miller-Bravais to Miller (orthagonal)
 %and store in the bt double
