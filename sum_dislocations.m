@@ -1,7 +1,26 @@
 function [GND] = sum_dislocations(disArray, systems,ebsd)
-%sum_dislocatiosn Collect individual dislocation types and group them into
+%sum_dislocations collects individual dislocation types and group them into
 %slip systems for easier plotting/analysis
 %   Detailed explanation goes here
+
+%disArray = output from GND_auto.m containing a matrix of the dislocation
+%densities for all dislcation types at each point in an ebsd map
+
+%systems = output from GND_auto.m containing information about the burgers
+%vectors, slip planes, phases, etc. of the dislocation types in disArray
+
+%GND = a structure containing the information from disArray, arranged
+%according to the slip systems in systems.  Properties of the structure
+%include burgers, plane, phase, name, data.  Data contains all the GND
+%densities for that system, name is the name of the slip system (for HCP
+%systems), plane and burgers are the slip plane and Burgers vectors, and
+%phase is the phase #
+
+%For example, to get the slip plane of the first slip system, use
+%GND(1).plane, and to get the dislocation density of dislocations on that
+%slip system use GND(1).data
+
+
 GND_counter=1;
 
 for i=1:length(systems)
