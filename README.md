@@ -21,11 +21,11 @@ doBurgersHCP.m
 	A function used to set up the Burgers vector information for Hexagonal Close Packed materials.
 	This gets called by GND_auto.
 	
-cpp_curvatures.cpp 
+cpp_curvatures.cpp (deprecated)*
 	A c++ source file containing the code that calculates the lattice curvatures for an EBSD dataset.
 	This is called by GND_auto.  C++ is used because matlab is much, much slower at doing these calculations.
 
-cpp_curvatures.mexw64
+cpp_curvatures.mexw64 (deprecated)*
 	This is a "mex" file, which, allows Matlab to execute c++ code.  If you are experiencing errors, you can
 	have matlab rebuild this file by issuing the following command in Matlab: mex cpp_curvatures.cpp
 	
@@ -35,21 +35,34 @@ sum_dislocations
 	with HCP materials, the dislocation densities will be arranged into prism<a>,screw<a>,basal<a>,pyramidal<c+a>,
 	screw<c+a>, and total GND density.
 
+*These files are no longer included in new releases, as curvature calculations are now done entirely within Matlab/MTEX
 
 *************************************	
 Running The Code:
 *************************************
+Some thorough tutorials with worked examples of the code are available here: https://cochranec.github.io/
+
+
+
 First, make sure you have installed Matlab and MTEX, the latter of which can be found here: (http://mtex-toolbox.github.io/download.html).
 
 Import your EBSD data into Matlab using MTEX.  If you are unfamiliar with this, the MTEX website contains tutorials that you may find
-helpful.  Once you have imported your data, you must perform grain reconstruction on the dataset in order for the GND code to be used.
+helpful.  Once you have imported your data, you must perform grain reconstruction on the dataset in order for the GND code to be used, which is 
+done with the following command:
+
+[grains,ebsd.grainId,ebsd.mis2mean] = calcGrains(ebsd,'angle',5*degree);
+
+(You may substitute any number in for the 5, and this will be the threshold in degrees for defining a grain boundary)
+
 It is also highly reccomended that you smooth out the orientation data in your EBSD map, using the smooth command in MTEX.  Smoothing
 is not strictly necessary to obtain results, but doing so drastically improves the quality of the results you get.  Smoothing can be 
 done with this command:
 
 ebsd_smoothed=smooth(ebsd,splineFilter);
 
-Where ebsd is your dataset.  The splineFilter is the simplest filter to use, but there are others if you wish to experiment.
+Where ebsd is your dataset.  The splineFilter is the simplest filter to use, but there are others if you wish to experiment. (I personally reccomend the infimalConvolutionFilter)
+
+I have found that it is best to re-run the grain reconstruction command after smoothing, as the smoothing process can somethings cause small issues with grain boundaries.
 
 Once your data is smoothed, simply run the following command:
 
@@ -58,6 +71,12 @@ Once your data is smoothed, simply run the following command:
 The GND data will be stored in "dislocations".
 
 "systems" will be a structure containing info on the slip systemds for each phase (burgers vectors, planes, etc). 
+
+To get the data into a more managable form, run the following command:
+
+GND=sum_dislocations(dislocations,systems,ebsd);
+
+This will create a structure called GND which sorts the dislocation densities according to slip system.
 
 ebsd is your ebsd dataset that you would like to analyze
 
@@ -82,10 +101,12 @@ basal<a>: {0001}/<11-20>
 
 pyramidal<c+a>: {10-11}/<11-23>
 
-I know that some HCP metals (eg. Mg) can accomplish pyramidal slip through a slightly different slip system.  If you wish to change which slip system the code uses, you need only open the doBurgersHCP.m file and make
+pyramidal2<c+a>: {10-22}/<11-23>
+
+If you wish to change which slip system(s) the code uses, you need only open the doBurgersHCP.m file and make
 a small edit.  If you look through the file you will find a comment designating where a slip system setup begins (example: %%Pyramidal Slip System (Edge)).  Immediately following this will be a pair of lines that assigns
 values to a variable b (the slip direction) and n (the slip plane).  Just change the numbers inside the call to the "Miller" functions in these lines to the slip direction and plane you wish to use.  You don't need to worry
-about symmetries, the next few lines of code do that automatically, just get the right families of planes/directions and everything should be fine.
+about symmetries, the next few lines of code do that automatically, just get the right families of planes/directions and everything should be fine.  Using the doBurgersHPC.m file as a template, you should be able to create similar files for any set of crystal symmetries and slip systems you care to use.  I may add more crystal symmetries in future releases, but FCC, HCP, and BCC are all currently supported.
 
 ****************************************
 Notes for Older Versions of MATLAB:

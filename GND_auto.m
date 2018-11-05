@@ -11,12 +11,14 @@ function [disArray, systems]= GND_auto( ebsd, nthreads,poisson,cubicType )
 %order.  Non-cubic phases should NOT be specified.  For example, if phase 1 
 %is BCC, phase 2 is HCP, and phase 3 is FCC, then cubicType={'BCC' 'FCC'}
 
+
+%Start keeping track of elapsed time
+tic;
+
 %Set up parallel pool
 if nthreads>1
     pool=gcp;
 end
-
-
 
 if nargin==2
     poissonDefined=0;
@@ -39,12 +41,9 @@ end
 %will not be used.
 cubicCounter=1;
 
-
-%Calculate lattice curvatures using C language code for speed.  This will
-%be ported to occur entirely in Matlab in a future update
-disp('Calculating Curvatures...');
-curve = CalcCurvature(ebsd);
-disp('Curvature calculations complete!');
+%Allocate memory for temporary array to hold curvature data
+tempcurve=zeros(length(ebsd),6);
+tempcurve(:,:)=NaN;
 
     
 tempPoisson=poisson;
@@ -52,6 +51,22 @@ tempPoisson=poisson;
 
 %loop through all phases except phase 0, which is non-indexed data
 for i=unique(ebsd.phase(ebsd.phase>0))'
+    
+    %For each phase, gridify the ebsd data and get the x and y gradients
+    temp=ebsd(ebsd.phase==i);
+     [temp,newId]=gridify(temp);
+    
+    gx=temp.gradientX;
+    gx=gx(temp.phase==i);
+    
+    gy=temp.gradientY;
+    gy=gy(temp.phase==i);
+    
+    %Put the curvature components into a temporary variable
+    tempcurve(temp.phase==i,:)=[gx.x gx.y gx.z gy.x gy.y gy.z];
+    
+    
+    
     %If user didn't input enough Poissson's ratio values, then ask for them
     if(length(unique(ebsd.phase(ebsd.phase>0)))>poissonDefined)
         prompt=sprintf('Number of defined Poissons Ratio less than number of phases in ebsd data.  Enter Poisson Ratio for phase %i (%s) now.\n (To avoid this dialog send an array containing the values for all phases as an input when calling GND code)',i,ebsd(ebsd.phase==i).mineral);
@@ -90,6 +105,13 @@ for i=unique(ebsd.phase(ebsd.phase>0))'
 end
 
 
+%This makes sure that the curvature data calculated from the gridified
+%ebsd map lines up with the original (non-gridified) map.  This 
+%allows the results to be easily plotted on the original ebsd map
+[temp,newId]=gridify(ebsd);
+indx=temp.id2ind(newId);
+curve=tempcurve(indx,:);
+
 
 %**************************************************************************
 % Minimization
@@ -120,7 +142,7 @@ fmaxSize=max(cellfun('length',f));
 testrun=1:min(1000*nthreads,length(ebsd));
 tic
 parfor (j=testrun,nthreads)
-    if(phase(j)~=0)
+    if(phase(j)~=0 && sum(isnan(curve(j,:)))==0)
         x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
         disArray(j,:) = [x; zeros(fmaxSize-length(f{phase(j)}),1)];
     end
@@ -133,7 +155,7 @@ dt=datetime('now')+seconds(estimate);
 fprintf('Analysis should be complete by: %s system clock time.\n',datestr(dt));
 
 
-tic
+
 %loop through all points
 parfor (j=1:size(curve,1),nthreads)
 %for j=1:size(curve,1) %Replace above line with this one for running
@@ -141,7 +163,7 @@ parfor (j=1:size(curve,1),nthreads)
 
     %Only perform calculations on indexed phases, don't redo calculations
     %that were done in the test run.
-    if(phase(j)~=0 && max(testrun==j)==0)        
+    if(phase(j)~=0 && max(testrun==j)==0 && sum(isnan(curve(j,:)))==0)        
         x =linprog(f{phase(j)},A{phase(j)},[kappa11(j) kappa12(j) kappa21(j) kappa22(j) kappa31(j) kappa32(j)],[],[],lb{phase(j)},[],[],options);
         %Place solved dislocation densities for various dislocation types
         %in disArray
@@ -149,10 +171,10 @@ parfor (j=1:size(curve,1),nthreads)
     end
 end
 
-
+%Print out system time that the analysis finished at, and total elapsed
+%time.
 disp('Minimization complete!');
-actualTime=toc;
-estimateError=(estimate-actualTime)/estimate*100;
-fprintf('Actual time taken was %s.  Time estimate was off by %3.1f%%\n',datestr(actualTime/60/60/24,'HH:MM:SS'),estimateError)
+fprintf('Analysis completed at %s system clock time.\n',datestr(datetime('now')))
+fprintf('Total elapsed time was: %s \n',datestr(toc/60/60/24,'HH:MM:SS'))
 end
 
