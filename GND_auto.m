@@ -110,7 +110,9 @@ end
 %allows the results to be easily plotted on the original ebsd map
 [temp,newId]=gridify(ebsd);
 indx=temp.id2ind(newId);
+
 curve=tempcurve(indx(indx<=size(tempcurve,1)),:);
+
 
 
 %**************************************************************************
