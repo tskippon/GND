@@ -1,4 +1,9 @@
 function [ f, A, lb, systems] = doBurgersFCC(ebsd,phaseNum,poisson)
+%% Preamble
+%this code outputs array f (containing energies for all dislocation types)
+%array A (containing Burgers and Line vector information), 
+%array lb (containing lower bounds for density of each dislocation type -i.e. zero), 
+%Structure systems (containing the possibleslip planes and directions and what family they belong to)
 Ntypes=0;
 CS=ebsd(ebsd.phase==phaseNum).CS;
 
